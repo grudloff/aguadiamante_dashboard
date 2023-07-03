@@ -5,6 +5,8 @@ from itertools import cycle
 import pandas as pd
 import time
 
+st.set_page_config(page_title="Clientes", page_icon="🏃")
+
 def validarRut(rut):
 	rut = rut.upper()
 	rut = rut.replace("-","")
@@ -24,7 +26,6 @@ def validarRut(rut):
 	else:
 		return False
 
-st.set_page_config(page_title="Clientes", page_icon="🏃")
 
 # form
 with st.form("Cliente"):
