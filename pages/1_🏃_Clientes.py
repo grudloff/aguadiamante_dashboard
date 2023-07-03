@@ -4,6 +4,7 @@ from streamlit_extras.switch_page_button import switch_page
 from itertools import cycle
 import pandas as pd
 import time
+from datetime import date
 
 st.set_page_config(page_title="Clientes", page_icon="🏃")
 
@@ -66,9 +67,10 @@ if submit and validate_form():
     st.session_state["rut"] = rut
     st.session_state["nombre"] = nombre
     ciudad = direccion.split(",")[-1].strip()
+    added_date = date.today()
     try:
-        run_execute("INSERT INTO clientes (cliente_rut, nombre, direccion, ciudad, numero_telefono, email) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (rut, nombre, direccion, ciudad, telefono, email))
+        run_execute("INSERT INTO clientes (cliente_rut, nombre, direccion, ciudad, numero_telefono, email, date) VALUES (%s, %s, %s, %s, %s, %s)", 
+                (rut, nombre, direccion, ciudad, telefono, email, added_date))
         st.success("Cliente agregado exitosamente")
         run_query.clear()
     except Exception as e:
@@ -82,9 +84,9 @@ if submit and validate_form():
 # plot clientes table inside a container
 with st.expander("Ver Clientes"):
     num_clients = st.number_input("Número máximo de clientes a mostrar", min_value=10, step=10)
-    clientes = run_query("SELECT * FROM clientes LIMIT %s", (num_clients,))
+    clientes = run_query("SELECT * FROM clientes ORDER BY date DESC LIMIT %s", (num_clients,))
     # convert to dataframe
-    header = ["RUT", "Nombre", "Teléfono", "Dirección", "Ciudad", "Email"]
+    header = ["RUT", "Nombre", "Teléfono", "Dirección", "Ciudad", "Email", "Fecha de registro"]
     clientes = pd.DataFrame(clientes, columns=header)
     atributes = st.multiselect("Atributos a mostrar", header, default=header)
     st.write("## Tabla Clientes")
@@ -120,13 +122,27 @@ with st.expander("Modificar Cliente"):
 with st.expander("Eliminar Cliente"):
     st.write("## Eliminar Cliente")
     nombre = st.selectbox("Nombre", clientes["Nombre"].unique(), key="nombre_eliminar")
-    rut = st.selectbox("RUT", clientes[clientes["Nombre"]==nombre]["RUT"], key="rut_eliminar")
-    submit = st.button("Eliminar", use_container_width=True, key="button_eliminar")
+    rut = st.selectbox("RUT", clientes[clientes["Nombre"]==nombre]["RUT"], key="rut_eliminar",
+                       help = "Selección de rut, en caso de que exista más de un cliente con el mismo nombre")
+
+    if st.session_state.get("delete_attempt", False):
+        double_check = st.slider("¿Estás seguro? Desliza a la derecha para confirmar.", 0, 1, 0)
+    else:
+        st.warning("Esta acción no se puede deshacer")
+        double_check = False
+    submit = st.button("Eliminar", use_container_width=True, key="button_eliminar", type="primary")
+
+
     if submit:
-        try:
-            run_execute("DELETE FROM clientes WHERE nombre = %s", (nombre,))
-            st.success("Cliente eliminado exitosamente")
-            run_query.clear()
-        except Exception as e:
-            st.error("No se pudo eliminar el cliente")
-            st.error(e)
+        # set button_eliminar to True
+        st.session_state["delete_attempt"] = True
+        if double_check:
+            try:
+                run_execute("DELETE FROM clientes WHERE nombre = %s", (nombre,))
+                st.success("Cliente eliminado exitosamente")
+                run_query.clear()
+            except Exception as e:
+                st.error("No se pudo eliminar el cliente")
+                st.error("Posiblemente el cliente tiene ventas asociadas, en tal caso, elimine primero las ventas asociadas")
+                st.error(e)
+            st.session_state["delete_attempt"] = False
