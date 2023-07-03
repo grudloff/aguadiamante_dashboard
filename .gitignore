@@ -1,0 +1,5 @@
+postgre
+.postgresql
+.conda
+__pycache__
+secrets.toml
