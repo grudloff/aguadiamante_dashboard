@@ -1,9 +1,8 @@
 import streamlit as st
+st.set_page_config(page_title="Gastos", page_icon="🧾")
 from Diamante_Agua_Pura import run_query, run_execute
 from datetime import date
 import pandas as pd
-
-st.set_page_config(page_title="Gastos", page_icon="🧾")
 
 # add a new expense to the database
 with st.form(key="form"):
