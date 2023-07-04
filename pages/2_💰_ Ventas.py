@@ -1,9 +1,8 @@
 import streamlit as st
+st.set_page_config(page_title="Ventas", page_icon="💰")
 from Diamante_Agua_Pura import init_connection, run_query, run_execute
 from datetime import date
 import pandas as pd
-
-st.set_page_config(page_title="Ventas", page_icon="💰")
 
 nombre = st.session_state.get("nombre", None)
 
