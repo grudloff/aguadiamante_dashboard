@@ -1,12 +1,11 @@
 import os
 import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
-import psycopg2
-
 st.set_page_config(
     page_title="Diamante Agua Pura",
     page_icon="💎",
 )
+from streamlit_extras.switch_page_button import switch_page
+import psycopg2
 
 folder_filepath = ".postgresql" 
 cert_filepath = os.path.join(folder_filepath, "root.crt") 
