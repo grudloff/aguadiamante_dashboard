@@ -1,5 +1,5 @@
 import streamlit as st
-from .utils import run_query
+from utils import run_query
 from geopy.geocoders import Nominatim
 import pandas as pd
 from typing import Tuple

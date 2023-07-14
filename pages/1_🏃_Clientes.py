@@ -1,5 +1,5 @@
 import streamlit as st
-from .utils import run_query, run_execute
+from utils import run_query, run_execute
 from streamlit_extras.switch_page_button import switch_page
 from itertools import cycle
 import pandas as pd

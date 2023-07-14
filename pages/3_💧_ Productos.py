@@ -1,5 +1,5 @@
 import streamlit as st
-from .utils import init_connection, run_execute, run_query
+from utils import init_connection, run_execute, run_query
 from datetime import date
 import pandas as pd
 
