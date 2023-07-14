@@ -1,9 +1,10 @@
 import streamlit as st
-st.set_page_config(page_title="Visualización", page_icon="📈")
-from Diamante_Agua_Pura import run_query
+from .utils import run_query
 from geopy.geocoders import Nominatim
 import pandas as pd
 from typing import Tuple
+
+st.set_page_config(page_title="Visualización", page_icon="📈")
 
 # get geocorder function
 @st.cache_resource    

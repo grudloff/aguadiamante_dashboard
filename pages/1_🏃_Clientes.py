@@ -1,11 +1,12 @@
 import streamlit as st
-st.set_page_config(page_title="Clientes", page_icon="🏃")
-from Diamante_Agua_Pura import run_query, run_execute
+from .utils import run_query, run_execute
 from streamlit_extras.switch_page_button import switch_page
 from itertools import cycle
 import pandas as pd
 import time
 from datetime import date
+
+st.set_page_config(page_title="Clientes", page_icon="🏃")
 
 def validarRut(rut):
 	rut = rut.upper()

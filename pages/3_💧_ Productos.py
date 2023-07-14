@@ -1,8 +1,9 @@
 import streamlit as st
-st.set_page_config(page_title="Productos", page_icon="💧")
-from Diamante_Agua_Pura import init_connection, run_execute, run_query
+from .utils import init_connection, run_execute, run_query
 from datetime import date
 import pandas as pd
+
+st.set_page_config(page_title="Productos", page_icon="💧")
 
 @st.cache_data(ttl=600)
 def load_products():
