@@ -24,19 +24,13 @@ def init_connection():
 
 @st.cache_data(ttl=600)
 def run_query(*query):
-    conn = st.session_state.get("conn", None)
-    if conn is None:
-        conn = init_connection()
-        st.session_state["conn"] = conn
+    conn = init_connection()
     with conn.cursor() as cur:
         cur.execute(*query)
         return cur.fetchall()
     
 def run_execute(*query):
-    conn = st.session_state.get("conn", None)
-    if conn is None:
-        conn = init_connection()
-        st.session_state["conn"] = conn
+    conn = init_connection()
     with conn.cursor() as cur:
         cur.execute(*query)
         conn.commit()
