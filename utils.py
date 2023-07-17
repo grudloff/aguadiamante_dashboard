@@ -1,12 +1,17 @@
 import os
 import streamlit as st
 import psycopg2
+import warnings
 
 folder_filepath = ".postgresql" 
 cert_filepath = os.path.join(folder_filepath, "root.crt") 
 
 def _validate_connection(conn):
-     return conn.closed==0
+     try:
+          return conn.closed==0
+     except Exception as e:
+          warnings.warn(f"Error accessing the database connection:\n {e} \n Reconnecting...")
+          return False
 
 @st.cache_resource(validate = _validate_connection)
 def init_connection():
