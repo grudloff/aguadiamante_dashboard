@@ -1,4 +1,5 @@
 import streamlit as st
+from utils import init_connection
 st.set_page_config(page_title="Diamante Agua Pura", page_icon="💎")
 
 st.write("# Bienvenido al dashboard de Agua Diamante 👋")
@@ -12,6 +13,7 @@ st.markdown(
 """
 )
 
+conn = init_connection()
 
 
 
