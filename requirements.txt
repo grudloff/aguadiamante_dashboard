@@ -1,3 +1,4 @@
 psycopg2-binary
 geopy
 streamlit_extras
+retry
