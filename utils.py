@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import psycopg2
 import warnings
+from retry import retry
 
 folder_filepath = ".postgresql" 
 cert_filepath = os.path.join(folder_filepath, "root.crt") 
