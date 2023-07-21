@@ -23,14 +23,26 @@ def init_connection():
     return conn
 
 @st.cache_data(ttl=600)
+@retry(tries=10)
 def run_query(*query):
-    conn = init_connection()
-    with conn.cursor() as cur:
-        cur.execute(*query)
-        return cur.fetchall()
-    
+    try:
+        conn = init_connection()
+        with conn.cursor() as cur:
+            cur.execute(*query)
+            return cur.fetchall()
+    except Exception as e:
+        print("There was an error in the query!")
+        print(e)
+        raise
+
+@retry(tries=10)
 def run_execute(*query):
-    conn = init_connection()
-    with conn.cursor() as cur:
-        cur.execute(*query)
-        conn.commit()
+    try:
+        conn = init_connection()
+        with conn.cursor() as cur:
+            cur.execute(*query)
+            conn.commit()
+    except Exception as e:
+        print("There was an error while executing the query!")
+        print(e)
+        raise
