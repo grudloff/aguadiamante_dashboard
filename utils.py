@@ -2,7 +2,7 @@ import os
 import streamlit as st
 import psycopg2
 import warnings
-from retry import retry
+from tenacity import retry, stop_after_attempt
 
 folder_filepath = ".postgresql" 
 cert_filepath = os.path.join(folder_filepath, "root.crt") 
@@ -24,7 +24,7 @@ def init_connection():
     return conn
 
 @st.cache_data(ttl=600)
-@retry(tries=10)
+@retry(stop=stop_after_attempt(10))
 def run_query(*query):
     try:
         conn = init_connection()
@@ -36,7 +36,7 @@ def run_query(*query):
         print(e)
         raise
 
-@retry(tries=10)
+@retry(stop=stop_after_attempt(10))
 def run_execute(*query):
     try:
         conn = init_connection()
