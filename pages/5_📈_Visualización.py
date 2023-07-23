@@ -59,20 +59,21 @@ with st.expander("Mapa de clientes"):
 
     client_directions = run_query("SELECT DISTINCT direccion FROM clientes")
     clients_loc = pd.DataFrame(client_directions, columns=["direccion"])
-    clients_loc[["direccion", "ciudad"]] = clients_loc["direccion"].str.split(",", expand=True)
-    clients_loc = direction_to_latlong(clients_loc)
+    if not clients_loc.empty:
+        clients_loc[["direccion", "ciudad"]] = clients_loc["direccion"].str.split(",", expand=True)
+        clients_loc = direction_to_latlong(clients_loc)
 
-    city_options = clients_loc["ciudad"].unique()
-    city_selection = st.multiselect("Filtrar por ciudad", city_options,  default=city_options, key="Ciudad")
-    df_clients_loc_filtered = clients_loc[clients_loc["ciudad"].isin(city_selection)]
+        city_options = clients_loc["ciudad"].unique()
+        city_selection = st.multiselect("Filtrar por ciudad", city_options,  default=city_options, key="Ciudad")
+        df_clients_loc_filtered = clients_loc[clients_loc["ciudad"].isin(city_selection)]
 
-    help = "Muestra todos los clientes en un mapa. En su defecto, muestra un mapa por ciudad."
-    if st.checkbox("Mostrar mapa agregado", value=True, help=help):
-        st.map(df_clients_loc_filtered)
-    else:
-        for city in city_options:
-            st.write("### " + city)
-            st.map(clients_loc[clients_loc["ciudad"] == city])
+        help = "Muestra todos los clientes en un mapa. En su defecto, muestra un mapa por ciudad."
+        if st.checkbox("Mostrar mapa agregado", value=True, help=help):
+            st.map(df_clients_loc_filtered)
+        else:
+            for city in city_options:
+                st.write("### " + city)
+                st.map(clients_loc[clients_loc["ciudad"] == city])
 
 st.write("## Ventas")
 
@@ -149,9 +150,10 @@ with st.expander("Mapa de ventas"):
 
     # plot
     ventas_df = pd.DataFrame(ventas, columns=["direccion", "ciudad", "ventas"])
-    ventas_df[["direccion", "ciudad"]] = ventas_df["direccion"].str.split(",", expand=True)
-    ventas_df = direction_to_latlong(ventas_df)
-    st.map(ventas_df)
+    if not ventas_df.empty:
+        ventas_df[["direccion", "ciudad"]] = ventas_df["direccion"].str.split(",", expand=True)
+        ventas_df = direction_to_latlong(ventas_df)
+        st.map(ventas_df)
 
 st.write("## Productos")
 with st.expander("Stock en el tiempo"):

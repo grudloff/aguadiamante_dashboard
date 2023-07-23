@@ -93,8 +93,10 @@ with st.expander("Modificar Producto"):
     with st.form("Modificar Producto"):
         st.write("## Ingrese el nombre y datos de producto a modificar")
         nombre = st.selectbox("Nombre", product_df["nombre"])
-        precio = st.number_input("Precio", min_value=0, step=10, value=product_df[product_df["nombre"] == nombre]["precio"].values[0])
-        stock = st.number_input("Cantidad", min_value=0, step=1, value=product_df[product_df["nombre"] == nombre]["stock"].values[0])
+        product_instance_df = product_df[product_df["nombre"] == nombre]
+        if not product_instance_df.empty:
+            precio = st.number_input("Precio", min_value=0, step=10, value=product_instance_df["precio"].values[0])
+            stock = st.number_input("Cantidad", min_value=0, step=1, value=product_instance_df["stock"].values[0])
         submit = st.form_submit_button("Modificar", use_container_width=True)
     if submit:
         product_id = int(product_df[product_df["nombre"] == nombre]["id"].values[0])
