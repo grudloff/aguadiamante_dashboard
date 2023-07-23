@@ -1,5 +1,5 @@
 postgre
 .postgresql
+.streamlit
 .conda
 __pycache__
-secrets.toml
