@@ -90,7 +90,7 @@ if submitted and valid_form():
         reset_form()
     except Exception as e:
         st.error("Error al agregar venta")
-        st.error(e)
+        raise e
 
 with st.expander("Ver ultimas ventas"):
     num_pedidos = st.number_input("Número máximo de pedidos a mostrar", min_value=10, step=10)
@@ -127,4 +127,4 @@ with st.expander("Eliminar Venta"):
             run_query.clear()
         except Exception as e:
             st.error("No se pudo eliminar el pedido")
-            st.error(e)
+            raise e
