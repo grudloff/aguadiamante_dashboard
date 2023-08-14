@@ -70,7 +70,7 @@ with st.expander("Agregar Stock"):
             st.success("Stock agregado con éxito!")
         except Exception as e:
             st.error("No se pudo agregar el stock")
-            st.error(e)
+            raise e
 
 with st.expander("Agregar Producto"):
     with st.form("Agregar Producto"):
@@ -81,12 +81,21 @@ with st.expander("Agregar Producto"):
         submit = st.form_submit_button("Agregar", use_container_width=True)
     if submit:
         try:
-            
+            # Insert the new product
+            conn = st.session_state.get("conn", init_connection())
+            with conn.cursor() as cur:
+                # Insert the new order and return the id
+                cur.execute("INSERT INTO productos (nombre, precio) VALUES (%s, %s) RETURNING producto_id", (nombre, precio),)
+                conn.commit()
+                # get the id of the inserted order
+                product_id = cur.fetchone()[0]
+                # Insert the stock
+                cur.execute("INSERT INTO producto_stock (producto_id, producto_stock) VALUES (%s, %s)", (product_id, stock))
             st.success("Producto agregado con éxito!")  
             reload_products() # clear cache
         except Exception as e:
             st.error("No se pudo agregar el producto")
-            st.error(e)
+            raise e
 
 with st.expander("Modificar Producto"):
     # TODO: Don't use form, to dynamically update the product_df
@@ -107,7 +116,7 @@ with st.expander("Modificar Producto"):
             reload_products() # clear cache
         except Exception as e:
             st.error("No se pudo modificar el producto")
-            st.error(e)
+            raise e
 
 with st.expander("Eliminar Producto"):
     with st.form("Eliminar Producto"):
@@ -121,4 +130,4 @@ with st.expander("Eliminar Producto"):
             reload_products() # clear cache
         except Exception as e:
             st.error("No se pudo eliminar el producto")
-            st.error(e)
+            raise e
