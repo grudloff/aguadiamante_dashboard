@@ -75,7 +75,7 @@ if submit and validate_form():
         run_query.clear()
     except Exception as e:
         st.error("No se pudo agregar el cliente")
-        st.error(e)
+        raise e
     time.sleep(1)
     st.success("Redireccionando a la página de ventas...")
     time.sleep(2)
@@ -84,7 +84,8 @@ if submit and validate_form():
 # plot clientes table inside a container
 with st.expander("Ver Clientes"):
     num_clients = st.number_input("Número máximo de clientes a mostrar", min_value=10, step=10)
-    clientes = run_query("SELECT * FROM clientes ORDER BY date DESC LIMIT %s", (num_clients,))
+    clientes = run_query("""SELECT cliente_rut, nombre, numero_telefono, direccion, ciudad, email, date
+                         FROM clientes ORDER BY date DESC LIMIT %s""", (num_clients,))
     # convert to dataframe
     header = ["RUT", "Nombre", "Teléfono", "Dirección", "Ciudad", "Email", "Fecha de registro"]
     clientes = pd.DataFrame(clientes, columns=header)
@@ -110,13 +111,13 @@ with st.expander("Modificar Cliente"):
     submit = st.button("Modificar", use_container_width=True)
     if submit:
         try:
-            run_execute("UPDATE clientes SET nombre = %s, direccion = %s, ciudad = %s, numero_telefono = %s, email = %s WHERE rut = %s", 
+            run_execute("UPDATE clientes SET nombre = %s, direccion = %s, ciudad = %s, numero_telefono = %s, email = %s WHERE cliente_rut = %s", 
                     (nombre, direccion, ciudad, telefono, email, rut))
             st.success("Cliente modificado exitosamente")
             run_query.clear()
         except Exception as e:
             st.error("No se pudo modificar el cliente")
-            st.error(e)
+            raise e
 
 # option to delete a client
 with st.expander("Eliminar Cliente"):
@@ -144,5 +145,5 @@ with st.expander("Eliminar Cliente"):
             except Exception as e:
                 st.error("No se pudo eliminar el cliente")
                 st.error("Posiblemente el cliente tiene ventas asociadas, en tal caso, elimine primero las ventas asociadas")
-                st.error(e)
+                raise e
             st.session_state["delete_attempt"] = False
