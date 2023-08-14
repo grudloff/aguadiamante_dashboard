@@ -99,15 +99,15 @@ with st.expander("Ver Clientes"):
 # modify client
 with st.expander("Modificar Cliente"):
     st.write("## Modificar Cliente")
-    all_clients = run_query("SELECT * FROM clientes")
-    all_clients = pd.DataFrame(all_clients, columns=header)
-    nombre = st.selectbox("Nombre", all_clients["Nombre"].unique())
+    all_clients = run_query("SELECT cliente_rut, nombre, direccion, ciudad, numero_telefono, email FROM clientes")
+    all_clients = pd.DataFrame(all_clients, columns=["RUT", "Nombre", "Dirección", "Ciudad", "Teléfono", "Email"])
+    nombre = st.selectbox("Nombre", all_clients["Nombre"].unique(), help="Para modificar nombre, borrar cliente y crearlo nuevamente")
     rut = st.selectbox("RUT", all_clients[all_clients["Nombre"]==nombre]["RUT"])
-    all_clients_rut = all_clients[all_clients["RUT"]==rut]
-    direccion = st.selectbox("Dirección", all_clients_rut["Dirección"].unique())
-    ciudad = st.selectbox("Ciudad", all_clients_rut["Ciudad"].unique())
-    telefono = st.selectbox("Teléfono", all_clients_rut["Teléfono"].unique())
-    email = st.selectbox("Email", all_clients_rut["Email"].unique())
+    all_clients_rut = all_clients[all_clients["RUT"]==rut].iloc[0]
+    direccion = st.text_input("Dirección", all_clients_rut["Dirección"])
+    ciudad = st.text_input("Ciudad", all_clients_rut["Ciudad"])
+    telefono = st.text_input("Teléfono", all_clients_rut["Teléfono"])
+    email = st.text_input("Email", all_clients_rut["Email"])
     submit = st.button("Modificar", use_container_width=True)
     if submit:
         try:
