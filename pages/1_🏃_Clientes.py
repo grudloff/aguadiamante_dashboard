@@ -50,11 +50,23 @@ def validate_form():
     if direccion == "":
         st.error("Debes ingresar la dirección del cliente")
         return False
+    if direccion[-5:].lower() == "chile":
+        st.error("No debes ingresar el país en la dirección")
+        return False
+    if direccion.count(",") < 1:
+        st.error("Debes ingresar la ciudad del cliente, separada por una coma")
+        return False
     if telefono == "":
         st.error("Debes ingresar el teléfono del cliente")
         return False
+    if telefono[:3] != "+56":
+        st.error("Debes ingresar un teléfono válido, que comience con +56")
+        return False
     if email == "":
         st.error("Debes ingresar el email del cliente")
+        return False
+    if "@" not in email:
+        st.error("Debes ingresar un email válido")
         return False
     if validarRut(rut) is False:
         st.error("Debes ingresar un RUT válido")
