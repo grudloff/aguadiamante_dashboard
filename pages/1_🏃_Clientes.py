@@ -32,11 +32,11 @@ def validarRut(rut):
 with st.form("Cliente"):
     st.write("# Clientes")
     st.write("## Ingrese los datos del cliente")
-    rut = st.text_input("RUT") 
-    nombre = st.text_input("Nombre")
-    direccion = st.text_input("Dirección")
-    telefono = st.text_input("Teléfono")
-    email = st.text_input("Email")
+    rut = st.text_input("RUT", autocomplete="Disabled") 
+    nombre = st.text_input("Nombre", autocomplete="Disabled")
+    direccion = st.text_input("Dirección", autocomplete="Disabled")
+    telefono = st.text_input("Teléfono", autocomplete="Disabled")
+    email = st.text_input("Email", autocomplete="Disabled")
     submit = st.form_submit_button("Agregar", use_container_width=True)
 
 # Check that the inputs are ok
@@ -114,11 +114,20 @@ with st.expander("Modificar Cliente"):
     all_clients = pd.DataFrame(all_clients, columns=["RUT", "Nombre", "Dirección", "Ciudad", "Teléfono", "Email"])
     nombre = st.selectbox("Nombre", all_clients["Nombre"].unique(), help="Para modificar nombre, borrar cliente y crearlo nuevamente")
     rut = st.selectbox("RUT", all_clients[all_clients["Nombre"]==nombre]["RUT"])
-    all_clients_rut = all_clients[all_clients["RUT"]==rut].iloc[0]
-    direccion = st.text_input("Dirección", all_clients_rut["Dirección"])
-    ciudad = st.text_input("Ciudad", all_clients_rut["Ciudad"])
-    telefono = st.text_input("Teléfono", all_clients_rut["Teléfono"])
-    email = st.text_input("Email", all_clients_rut["Email"])
+    try:
+        all_clients_rut = all_clients[all_clients["RUT"]==rut].iloc[0]
+        disabled_flag = False
+    except IndexError:
+        all_clients_rut = {"Nombre": "", "Dirección": "", "Ciudad": "", "Teléfono": "", "Email": ""}
+        disabled_flag = True
+    direccion = st.text_input("Dirección", all_clients_rut["Dirección"],
+                              autocomplete="Disabled" ,disabled=disabled_flag)
+    ciudad = st.text_input("Ciudad", all_clients_rut["Ciudad"],
+                           autocomplete="Disabled" ,disabled=disabled_flag)
+    telefono = st.text_input("Teléfono", all_clients_rut["Teléfono"],
+                             autocomplete="Disabled" ,disabled=disabled_flag)
+    email = st.text_input("Email", all_clients_rut["Email"],
+                          autocomplete="Disabled" ,disabled=disabled_flag)
     submit = st.button("Modificar", use_container_width=True)
     if submit:
         try:
@@ -137,24 +146,15 @@ with st.expander("Eliminar Cliente"):
     rut = st.selectbox("RUT", clientes[clientes["Nombre"]==nombre]["RUT"], key="rut_eliminar",
                        help = "Selección de rut, en caso de que exista más de un cliente con el mismo nombre")
 
-    if st.session_state.get("delete_attempt", False):
-        double_check = st.slider("¿Estás seguro? Desliza a la derecha para confirmar.", 0, 1, 0)
-    else:
-        st.warning("Esta acción no se puede deshacer")
-        double_check = False
+    st.warning("Esta acción no se puede deshacer")
     submit = st.button("Eliminar", use_container_width=True, key="button_eliminar", type="primary")
 
-
     if submit:
-        # set button_eliminar to True
-        st.session_state["delete_attempt"] = True
-        if double_check:
-            try:
-                run_execute("DELETE FROM clientes WHERE nombre = %s", (nombre,))
-                st.success("Cliente eliminado exitosamente")
-                run_query.clear()
-            except Exception as e:
-                st.error("No se pudo eliminar el cliente")
-                st.error("Posiblemente el cliente tiene ventas asociadas, en tal caso, elimine primero las ventas asociadas")
-                raise e
-            st.session_state["delete_attempt"] = False
+        try:
+            run_execute("DELETE FROM clientes WHERE nombre = %s", (nombre,))
+            st.success("Cliente eliminado exitosamente")
+            run_query.clear()
+        except Exception as e:
+            st.error("No se pudo eliminar el cliente")
+            st.error("Posiblemente el cliente tiene ventas asociadas, en tal caso, elimine primero las ventas asociadas")
+            raise e
