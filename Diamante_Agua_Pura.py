@@ -9,9 +9,12 @@ st.markdown(
     Este es un dashboard de Agua Diamante, aquí podrás ingresar información de los clientes, productos, ventas, etc.
     así como también podrás visualizar información sobre estos.
 
-    **👈 Seleccionar una opción en el sidebar** 
+    **👈 Seleccionar una opción en el sidebar**
 """
 )
+
+st.info("Para abrir el sidebar seleccionar el icono de la esquina superior izquierda", icon="ℹ️")
+
 
 conn = init_connection()
 
