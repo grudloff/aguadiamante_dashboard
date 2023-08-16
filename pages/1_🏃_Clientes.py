@@ -67,10 +67,9 @@ if submit and validate_form():
     st.session_state["rut"] = rut
     st.session_state["nombre"] = nombre
     ciudad = direccion.split(",")[-1].strip()
-    added_date = date.today()
     try:
-        run_execute("INSERT INTO clientes (cliente_rut, nombre, direccion, ciudad, numero_telefono, email, date) VALUES (%s, %s, %s, %s, %s, %s)", 
-                (rut, nombre, direccion, ciudad, telefono, email, added_date))
+        run_execute("INSERT INTO clientes (cliente_rut, nombre, direccion, ciudad, numero_telefono, email, date) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+                (rut, nombre, direccion, ciudad, telefono, email, date.today()))
         st.success("Cliente agregado exitosamente")
         run_query.clear()
     except Exception as e:
