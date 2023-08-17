@@ -62,10 +62,7 @@ def validate_form():
     if telefono[:3] != "+56":
         st.error("Debes ingresar un teléfono válido, que comience con +56")
         return False
-    if email == "":
-        st.error("Debes ingresar el email del cliente")
-        return False
-    if "@" not in email:
+    if email != "" and "@" not in email:
         st.error("Debes ingresar un email válido")
         return False
     if validarRut(rut) is False:
