@@ -67,6 +67,12 @@ with st.container():
         df.loc["Total"] = ["", "", "", sum(parciales)]
         st.table(df)
 
+        # add link to google maps
+        st.write("### Dirección")
+        direccion = run_query("SELECT direccion FROM clientes WHERE cliente_rut = %s", (rut,))[0][0]
+        st.write(f"{direccion} [[Abrir en Google maps]](https://www.google.com/maps/search/?api=1&query={'+'.join(direccion.split())})")
+
+
     submitted = st.button("Agregar", use_container_width=True)
 
 if submitted and not valid_form():
