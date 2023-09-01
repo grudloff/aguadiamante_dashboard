@@ -4,6 +4,7 @@ st.set_page_config(page_title="Diamante Agua Pura", page_icon="💎")
 
 try:
     user_name = st.experimental_user["name"]
+    st.toast(repr(st.experimental_user))
     st.toast(f"Hello {user_name}! 👋")
 except KeyError:
     st.toast("Hello! 👋")
