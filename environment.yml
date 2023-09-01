@@ -1,0 +1,10 @@
+name: dashboard
+channels:
+  - conda-forge
+dependencies:
+  - psycopg2-binary
+  - geopy
+  - tenacity
+  - pip
+  - pip:
+    - streamlit_extras

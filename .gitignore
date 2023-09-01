@@ -3,4 +3,3 @@ postgre
 .streamlit
 .conda
 __pycache__
-environment.yml
