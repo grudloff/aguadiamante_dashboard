@@ -3,9 +3,13 @@ from utils import init_connection
 st.set_page_config(page_title="Diamante Agua Pura", page_icon="💎")
 
 try:
-    st.toast(dict(st.experimental_user))
-    user_name = st.experimental_user["name"]
-    st.toast(f"Hello {user_name}! 👋")
+    user = st.experimental_user
+    if "name" in user.keys():
+        user_name = user["name"]
+        st.toast(f"Hola {user_name}! 👋")
+    else:
+        email = user["email"]
+        st.toast(f"{email} ha ingresado! 👋")
 except KeyError:
     st.toast("Hello! 👋")
 
